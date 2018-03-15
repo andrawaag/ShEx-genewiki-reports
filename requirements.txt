@@ -1,0 +1,4 @@
+requests
+SPARQLWrapper
+pandas
+PyShEx
