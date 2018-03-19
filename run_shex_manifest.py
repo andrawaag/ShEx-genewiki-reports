@@ -34,7 +34,7 @@ def run_shex_manifest():
     #manifest = \
     #    "https://raw.githubusercontent.com/SuLab/Genewiki-ShEx/master/pathways/wikipathways/manifest_all.json"
     manifest = jsonasobj.loads(requests.get(os.environ['MANIFEST_URL']).text)
-
+    print(os.environ['MANIFEST_URL'])
     for case in manifest:
         print(case._as_json_dumps())
         if case.data.startswith("Endpoint:"):
