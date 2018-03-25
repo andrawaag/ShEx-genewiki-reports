@@ -5,4 +5,4 @@ before_script:
       - cd shex.js
       - git checkout remote-query
       - npm install
-script: ./bin/validate -x https://raw.githubusercontent.com/SuLab/Genewiki-ShEx/master/diseases/wikidata-disease-ontology.shex --endpoint https://query.wikidata.org/bigdata/namespace/wdq/sparql --map '[{"node":"http://www.wikidata.org/entity/Q29496", "shape":"http://micel.io/genewiki/disease"}]'
+script: ./bin/validate -x https://raw.githubusercontent.com/SuLab/Genewiki-ShEx/master/pathways/reactome/manifest_all.json --endpoint https://query.wikidata.org/bigdata/namespace/wdq/sparql --map '[{"node":"http://www.wikidata.org/entity/Q29496", "shape":"http://micel.io/genewiki/disease"}]'
