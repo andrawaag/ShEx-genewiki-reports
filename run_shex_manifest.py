@@ -68,15 +68,15 @@ def run_shex_manifest():
                             continue
                         print(
                             "item with issue: " + str(result.focus) + " - " + "shape applied: " + str(result.start))
-                        shapemap = "[{\"node\": \"" + str(result.focus) + "\", \"shape\":\"http://micel.io/genewiki/disease\"}]"
-                        cmd = ["/tmp/shex.js/bin/validate", "-x", "https://raw.githubusercontent.com/SuLab/Genewiki-ShEx/master/diseases/wikidata-disease-ontology.shex", "--endpoint", "https://query.wikidata.org/bigdata/namespace/wdq/sparql", "--map", shapemap]
-                        result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=10)
+                        #shapemap = "[{\"node\": \"" + str(result.focus) + "\", \"shape\":\"http://micel.io/genewiki/disease\"}]"
+                        #cmd = ["/tmp/shex.js/bin/validate", "-x", "https://raw.githubusercontent.com/SuLab/Genewiki-ShEx/master/diseases/wikidata-disease-ontology.shex", "--endpoint", "https://query.wikidata.org/bigdata/namespace/wdq/sparql", "--map", shapemap]
+                        #result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=10)
                         #result = subprocess.run(cmd, stdout=subprocess.PIPE)
-                        ShExErrors = json.loads(result.stdout.decode('utf-8'))
+                        #ShExErrors = json.loads(result.stdout.decode('utf-8'))
                         # pprint.pprint(ShExErrors)
-                        for error in ShExErrors["errors"]:
-                            print(error["constraint"]["type"]+": "+error["constraint"]["predicate"])
-                        sys.exit()
+                        #for error in ShExErrors["errors"]:
+                        #    print(error["constraint"]["type"]+": "+error["constraint"]["predicate"])
+                        #sys.exit()
                         #print(cmd)
 
 
