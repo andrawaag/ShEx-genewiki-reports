@@ -1,11 +1,15 @@
+import subprocess
 import os
 import jsonasobj
 import pandas as pd
 import requests
 from SPARQLWrapper import SPARQLWrapper, JSON
 from ShExJSG import ShExC
+import json
+import pprint
 
-from pyshex import PrefixLibrary, ShExEvaluator
+from pyshex import PrefixLibrary, ShExEvaluator, .utils.wikidata_utils
+
 
 def get_sparql_dataframe(service, query):
     """
@@ -28,8 +32,6 @@ def get_sparql_dataframe(service, query):
 
     return pd.DataFrame(out, columns=cols)
 
-
-
 def run_shex_manifest():
     #manifest = \
     #    "https://raw.githubusercontent.com/SuLab/Genewiki-ShEx/master/pathways/wikipathways/manifest_all.json"
@@ -42,7 +44,7 @@ def run_shex_manifest():
             schema = requests.get(case.schemaURL).text
             shex = ShExC(schema).schema
             print("==== Schema =====")
-            # print(shex._as_json_dumps())
+            #print(shex._as_json_dumps())
 
             evaluator = ShExEvaluator(schema=shex, debug=True)
             sparql_query = case.queryMap.replace("SPARQL '''", "").replace("'''@START", "")
@@ -50,13 +52,30 @@ def run_shex_manifest():
             df = get_sparql_dataframe(sparql_endpoint, sparql_query)
             for wdid in df.item:
                 slurpeddata = requests.get(wdid + ".ttl")
-                results = evaluator.evaluate(rdf=slurpeddata.text, focus=wdid, debug=False)
+
+                results = evaluator.evaluate(rdf=slurpeddata.text, focus=wdid, debug=False  )
                 for result in results:
                     if result.result:
                         print(str(result.focus) + ": CONFORMS")
                     else:
+                        if str(result.focus) in [
+                            "http://www.wikidata.org/entity/Q33525",
+                            "http://www.wikidata.org/entity/Q62736",
+                            "http://www.wikidata.org/entity/Q112670"
+                        ]:
+                            continue
                         print(
                             "item with issue: " + str(result.focus) + " - " + "shape applied: " + str(result.start))
+                        shapemap = "[{\"node\": \"" + str(result.focus) + "\", \"shape\":\"http://micel.io/genewiki/disease\"}]"
+                        cmd = ["/tmp/shex.js/bin/validate", "-x", "https://raw.githubusercontent.com/SuLab/Genewiki-ShEx/master/diseases/wikidata-disease-ontology.shex", "--endpoint", "https://query.wikidata.org/bigdata/namespace/wdq/sparql", "--map", shapemap]
+                        result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=10)
+                        #result = subprocess.run(cmd, stdout=subprocess.PIPE)
+                        ShExErrors = json.loads(result.stdout.decode('utf-8'))
+                        # pprint.pprint(ShExErrors)
+                        for error in ShExErrors["errors"]:
+                            print(error["constraint"]["type"]+": "+error["constraint"]["predicate"])
+                        #print(cmd)
+
 
 
 run_shex_manifest()
