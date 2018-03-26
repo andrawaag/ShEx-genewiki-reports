@@ -7,9 +7,10 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 from ShExJSG import ShExC
 import json
 import pprint
+import sys
 
-from pyshex import PrefixLibrary, ShExEvaluator, .utils.wikidata_utils
-
+from pyshex import PrefixLibrary, ShExEvaluator
+from sparql_slurper import SlurpyGraph
 
 def get_sparql_dataframe(service, query):
     """
@@ -51,9 +52,10 @@ def run_shex_manifest():
 
             df = get_sparql_dataframe(sparql_endpoint, sparql_query)
             for wdid in df.item:
-                slurpeddata = requests.get(wdid + ".ttl")
+                slurpeddata = SlurpyGraph(sparql_endpoint)
+                # slurpeddata = requests.get(wdid + ".ttl")
 
-                results = evaluator.evaluate(rdf=slurpeddata.text, focus=wdid, debug=False  )
+                results = evaluator.evaluate(rdf=slurpeddata, focus=wdid, debug=True)
                 for result in results:
                     if result.result:
                         print(str(result.focus) + ": CONFORMS")
@@ -74,6 +76,7 @@ def run_shex_manifest():
                         # pprint.pprint(ShExErrors)
                         for error in ShExErrors["errors"]:
                             print(error["constraint"]["type"]+": "+error["constraint"]["predicate"])
+                        sys.exit()
                         #print(cmd)
 
 
