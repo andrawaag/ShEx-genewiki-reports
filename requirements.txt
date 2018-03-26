@@ -2,3 +2,4 @@ requests
 SPARQLWrapper
 pandas
 PyShEx
+sparql_slurper
