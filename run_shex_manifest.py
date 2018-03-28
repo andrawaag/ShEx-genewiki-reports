@@ -55,7 +55,7 @@ def run_shex_manifest():
                 slurpeddata = SlurpyGraph(sparql_endpoint)
                 # slurpeddata = requests.get(wdid + ".ttl")
 
-                results = evaluator.evaluate(rdf=slurpeddata, focus=wdid, debug=True)
+                results = evaluator.evaluate(rdf=slurpeddata, focus=wdid, debug=False)
                 for result in results:
                     if result.result:
                         print(str(result.focus) + ": CONFORMS")
@@ -68,6 +68,8 @@ def run_shex_manifest():
                             continue
                         print(
                             "item with issue: " + str(result.focus) + " - " + "shape applied: " + str(result.start))
+                        print(f"Number of triples used: {len(list(slurpeddata))}")
+                        #sys.exit()
                         #shapemap = "[{\"node\": \"" + str(result.focus) + "\", \"shape\":\"http://micel.io/genewiki/disease\"}]"
                         #cmd = ["/tmp/shex.js/bin/validate", "-x", "https://raw.githubusercontent.com/SuLab/Genewiki-ShEx/master/diseases/wikidata-disease-ontology.shex", "--endpoint", "https://query.wikidata.org/bigdata/namespace/wdq/sparql", "--map", shapemap]
                         #result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=10)
