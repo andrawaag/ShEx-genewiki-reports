@@ -2,4 +2,6 @@ requests
 SPARQLWrapper
 pandas
 PyShEx
+ShExJSG
+jsonasobj
 sparql_slurper
